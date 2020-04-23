@@ -12,20 +12,11 @@ object Run {
     @JvmStatic
     fun main(args: Array<String>){
         println("go")
-        val numberOfCrawlers = 7
 
-        val config = CrawlConfig()
         // Instantiate the controller for this crawl.
 
         // Instantiate the controller for this crawl.
-        val pageFetcher = PageFetcher(config)
-        config.crawlStorageFolder = "/home/fulton/crawl"
-        val robotstxtConfig = RobotstxtConfig()
-        val robotstxtServer = RobotstxtServer(robotstxtConfig, pageFetcher)
-        val controller = CrawlController(config, pageFetcher, robotstxtServer)
-        controller.addSeed("https://gateway.ipfs.io/ipns/spacex.eth")
-        val factory: WebCrawlerFactory<Spider> = WebCrawlerFactory { Spider() }
-        controller.start(factory, numberOfCrawlers);
+        Spider().crawl("https://gateway.ipfs.io/ipns/spacex.eth")
 
     }
 }
