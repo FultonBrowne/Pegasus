@@ -8,16 +8,14 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Spider {
 
     // We'll use a fake USER_AGENT so the web server thinks the robot is a normal web browser.
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1";
-    private Document htmlDocument;
-    private ArrayList<String> beenTo = new ArrayList<String>();
+    private final ArrayList<String> beenTo = new ArrayList<String>();
+    private final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
 
 
     /**
@@ -36,7 +34,6 @@ public class Spider {
 
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
             Document htmlDocument = connection.get();
-            this.htmlDocument = htmlDocument;
             if (connection.response().statusCode() == 200) // 200 is the HTTP OK status code
             // indicating that everything is great.
             {
@@ -48,6 +45,7 @@ public class Spider {
             }
             Elements linksOnPage = htmlDocument.select("a[href]");
             System.out.println("Found (" + linksOnPage.size() + ") links");
+            indexedDbs.add(new IndexedDb(htmlDocument.title(), "", url));
             for (Element link : linksOnPage) {
                 String href = link.absUrl("href");
                 System.out.println(href);
