@@ -13,11 +13,11 @@ public class Spider extends WebCrawler {
 
     @Override
     public boolean shouldVisit(Page referringPage, WebURL url) {
+        System.out.println(url);
         String href = url.getURL().toLowerCase();
         String domain = url.getDomain();
         boolean isCrypto = domain.endsWith(".eth") || domain.endsWith(".crypto") || domain.endsWith(".zil");
-        return !FILTERS.matcher(href).matches()
-                && isCrypto;
+        return !FILTERS.matcher(href).matches();
     }
 
     @Override

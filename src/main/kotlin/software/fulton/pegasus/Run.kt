@@ -23,7 +23,7 @@ object Run {
         val robotstxtConfig = RobotstxtConfig()
         val robotstxtServer = RobotstxtServer(robotstxtConfig, pageFetcher)
         val controller = CrawlController(config, pageFetcher, robotstxtServer)
-        controller.addSeed("fulton.eth")
+        controller.addSeed("https://gateway.ipfs.io/ipns/spacex.eth")
         val factory: WebCrawlerFactory<Spider> = WebCrawlerFactory { Spider() }
         controller.start(factory, numberOfCrawlers);
 
