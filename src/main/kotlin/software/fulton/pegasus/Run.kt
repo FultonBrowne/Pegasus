@@ -16,7 +16,7 @@ object Run {
         // Instantiate the controller for this crawl.
 
         // Instantiate the controller for this crawl.
-        Spider().crawl("https://gateway.ipfs.io/ipns/spacex.eth")
+        Spider().crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
 
     }
 }

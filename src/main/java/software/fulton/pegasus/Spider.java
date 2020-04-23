@@ -50,10 +50,15 @@ public class Spider {
             System.out.println("Found (" + linksOnPage.size() + ") links");
             for (Element link : linksOnPage) {
                 String href = link.absUrl("href");
-                if(href.startsWith("https://gateway.ipfs.io/ipns/") && href.endsWith(".html")){
-                    System.out.println(href);
-                    crawl(href);
-                }
+                System.out.println(href);
+                    if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
+                        new Thread(() -> {
+                            System.out.println(href);
+                            crawl(href);
+                        }).start();
+
+                    }
+
 
             }
             return true;
@@ -62,18 +67,5 @@ public class Spider {
             return false;
         }
     }
-
-
-    public boolean searchForWord(String searchWord) {
-        // Defensive coding. This method should only be used after a successful crawl.
-        if (this.htmlDocument == null) {
-            System.out.println("ERROR! Call crawl() before performing analysis on the document");
-            return false;
-        }
-        System.out.println("Searching for the word " + searchWord + "...");
-        String bodyText = this.htmlDocument.body().text();
-        return bodyText.toLowerCase().contains(searchWord.toLowerCase());
-    }
-
 
 }
