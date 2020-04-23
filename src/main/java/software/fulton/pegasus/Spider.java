@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Spider {
 
@@ -15,7 +16,9 @@ public class Spider {
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1";
     private final ArrayList<String> beenTo = new ArrayList<String>();
-    private final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
+    final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
+    private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
+            + "|png|mp3|mp4|zip|gz))$");
 
 
     /**
@@ -29,6 +32,7 @@ public class Spider {
         if (beenTo.contains(url)){
             return false;
         }
+        ArrayList<Thread> threads = new ArrayList<>();
         beenTo.add(url);
         try{
 
@@ -49,11 +53,17 @@ public class Spider {
             for (Element link : linksOnPage) {
                 String href = link.absUrl("href");
                 System.out.println(href);
+                if(!FILTERS.matcher(href).matches()){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
-                        new Thread(() -> {
+                        Thread thread = new Thread(() -> {
                             System.out.println(href);
                             crawl(href);
-                        }).start();
+
+                        });
+                        threads.add(thread);
+                        thread.start();
+                    }
+
 
                     }
 
