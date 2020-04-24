@@ -9,7 +9,7 @@ class Search(private var indexedDb: ArrayList<IndexedDb>) {
         }
         indexedDb.forEach {
             searchWords.forEach { it1: String? ->
-                if (it1?.let { it2 -> it.name.contains(it2) }!!) println("match")
+                if (it1?.let { it2 -> it.name.contains(it2) }!!) println(it.name)
             }
         }
     }
