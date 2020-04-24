@@ -35,7 +35,6 @@ public class Spider {
         ArrayList<Thread> threads = new ArrayList<>();
         beenTo.add(url);
         try{
-
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
             Document htmlDocument = connection.get();
             if (connection.response().statusCode() == 200) // 200 is the HTTP OK status code
@@ -52,13 +51,11 @@ public class Spider {
             indexedDbs.add(new IndexedDb(htmlDocument.title(), "", url));
             for (Element link : linksOnPage) {
                 String href = link.absUrl("href");
-                System.out.println(href);
                 if(!FILTERS.matcher(href).matches()){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
                         Thread thread = new Thread(() -> {
                             System.out.println(href);
                             crawl(href);
-
                         });
                         threads.add(thread);
                         thread.start();
