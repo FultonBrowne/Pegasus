@@ -1,5 +1,7 @@
 package software.fulton.pegasus
 
+import java.util.*
+
 
 object Run {
     @JvmStatic
@@ -11,8 +13,14 @@ object Run {
         // Instantiate the controller for this crawl.
         val spider = Spider()
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
-        println("done")
-        println(spider.indexedDbs)
+        while (true) {
+            val scanner = Scanner(System.`in`)
+            val nextLine = scanner.nextLine()
+            if (nextLine.equals("x")) return
+            val search = Search(spider.indexedDbs)
+            search.searchForResult(nextLine)
+        }
+
 
     }
 }
