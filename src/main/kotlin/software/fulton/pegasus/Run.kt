@@ -16,7 +16,7 @@ object Run {
         val spider = Spider()
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
         val ipfs = IPFS("/ip4/127.0.0.1/tcp/5001")
-        NamedStreamable.InputStreamWrapper("search.json")
+        NamedStreamable.InputStreamWrapper("search.json", )
         while (true) {
             val scanner = Scanner(System.`in`)
             val nextLine = scanner.nextLine()
