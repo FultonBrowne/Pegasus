@@ -40,21 +40,17 @@ public class Spider {
             if (connection.response().statusCode() == 200) // 200 is the HTTP OK status code
             // indicating that everything is great.
             {
-                System.out.println("\n**Visiting** Received web page at " + url);
             }
             if (!connection.response().contentType().contains("text/html")) {
-                System.out.println("**Failure** Retrieved something other than HTML");
                 return false;
             }
             Elements linksOnPage = htmlDocument.select("a[href]");
-            System.out.println("Found (" + linksOnPage.size() + ") links");
             indexedDbs.add(new IndexedDb(htmlDocument.title(), "", url));
             for (Element link : linksOnPage) {
                 String href = link.absUrl("href");
                 if(!FILTERS.matcher(href).matches()){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
                         Thread thread = new Thread(() -> {
-                            System.out.println(href);
                             crawl(href);
                         });
                         threads.add(thread);

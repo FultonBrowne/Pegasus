@@ -1,5 +1,7 @@
 package software.fulton.pegasus
 
+import io.ipfs.api.IPFS
+import io.ipfs.api.NamedStreamable
 import java.util.*
 
 
@@ -13,12 +15,14 @@ object Run {
         // Instantiate the controller for this crawl.
         val spider = Spider()
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
+        val ipfs = IPFS("/ip4/127.0.0.1/tcp/5001")
+        NamedStreamable.InputStreamWrapper("search.json")
         while (true) {
             val scanner = Scanner(System.`in`)
             val nextLine = scanner.nextLine()
             if (nextLine.equals("x")) return
-            val search = Search(spider.indexedDbs)
-            search.searchForResult(nextLine)
+            val search = Search()
+            search.searchForResult(nextLine, spider.indexedDbs)
         }
 
 

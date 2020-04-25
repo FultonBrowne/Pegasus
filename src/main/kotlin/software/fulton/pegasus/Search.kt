@@ -1,7 +1,7 @@
 package software.fulton.pegasus
 
-class Search(private var indexedDb: ArrayList<IndexedDb>) {
-    fun searchForResult(string: String){
+class Search() {
+    fun searchForResult(string: String, indexedDb:ArrayList<IndexedDb>){
         val searchData = arrayListOf<SearchData>()
         val searchWords = Utils().parseWord(string)
         searchWords.forEach {

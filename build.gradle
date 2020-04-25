@@ -12,6 +12,8 @@ version '1.0-SNAPSHOT'
 repositories {
     jcenter()
     mavenCentral()
+    maven { url 'https://jitpack.io' }
+
 
 }
 application {
@@ -20,6 +22,7 @@ application {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'com.github.ipfs:java-ipfs-http-client:v1.2.3'
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
     implementation('org.web3j:core:3.3.1')
 
