@@ -1,12 +1,16 @@
 package software.fulton.pegasus;
 
+import com.google.gson.stream.JsonWriter;
+import io.ipfs.api.NamedStreamable;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -16,9 +20,24 @@ public class Spider {
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1";
     private final ArrayList<String> beenTo = new ArrayList<String>();
+
+    JsonWriter writer = null;
     final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp4|zip|gz))$");
+
+    public Spider() throws IOException {
+        String url = ""; //TODO add the url
+        URL UrlObj = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) UrlObj.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        writer = new JsonWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+        connection.setDoOutput(true);
+
+
+    }
 
 
     /**
