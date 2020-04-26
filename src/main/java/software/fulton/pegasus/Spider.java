@@ -40,6 +40,7 @@ public class Spider {
                 .method("POST", body)
                 .build();
         Response response = client.newCall(request).execute();
+        new JsonWriter();
         writer = new JsonWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
 
         writer.beginArray();
@@ -95,6 +96,27 @@ public class Spider {
             // We were not successful in our HTTP request
             return false;
         }
+    }
+    public static File createTempDirectory()
+            throws IOException
+    {
+        final File temp;
+
+        BufferedReader reader = new BufferedWriter(new FileWriter(temp));
+
+        new FileOutputStream(temp).
+
+        if(!(temp.delete()))
+        {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+        }
+
+        if(!(temp.mkdir()))
+        {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
+
+        return (temp);
     }
 
 }
