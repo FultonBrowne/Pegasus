@@ -2,6 +2,7 @@ package software.fulton.pegasus;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
+import okhttp3.*;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,14 +29,19 @@ public class Spider {
             + "|png|mp3|mp4|zip|gz))$");
 
     public Spider() throws IOException {
-        String url = ""; //TODO add the url
-        URL UrlObj = new URL(url);
-        HttpURLConnection connection = (HttpURLConnection) UrlObj.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("snapshot" + System.currentTimeMillis(), TODO )
+                .build();
+        Request request = new Request.Builder()
+                .url("http://127.0.0.1:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
+                .method("POST", body)
+                .build();
+        Response response = client.newCall(request).execute();
         writer = new JsonWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-        connection.setDoOutput(true);
+
         writer.beginArray();
 
     }
