@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 public class Spider {
 
     // We'll use a fake USER_AGENT so the web server thinks the robot is a normal web browser.
+    OutputStream outputStream;
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1";
     private final ArrayList<String> beenTo = new ArrayList<String>();
@@ -29,19 +30,19 @@ public class Spider {
             + "|png|mp3|mp4|zip|gz))$");
 
     public Spider() throws IOException {
+        createTempDirectory();
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("snapshot" + System.currentTimeMillis(), TODO )
+                .addFormDataPart("snapshot" + System.currentTimeMillis(),  )
                 .build();
         Request request = new Request.Builder()
                 .url("http://127.0.0.1:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
                 .method("POST", body)
                 .build();
         Response response = client.newCall(request).execute();
-        new JsonWriter();
-        writer = new JsonWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
+        writer = new JsonWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 
         writer.beginArray();
 
@@ -102,9 +103,10 @@ public class Spider {
     {
         final File temp;
 
-        BufferedReader reader = new BufferedWriter(new FileWriter(temp));
+        temp = File.createTempFile("temp", "file");
 
-        new FileOutputStream(temp).
+        outputStream = new FileOutputStream(temp);
+
 
         if(!(temp.delete()))
         {
