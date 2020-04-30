@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class Spider {
@@ -24,6 +25,7 @@ public class Spider {
     private final ArrayList<String> beenTo = new ArrayList<String>();
     Gson gson = new Gson();
     JsonWriter writer;
+    private File temp;
     public int limit;
     final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
@@ -35,7 +37,7 @@ public class Spider {
                 .build();
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("snapshot" + System.currentTimeMillis(),  )
+                .addFormDataPart("snapshot" + System.currentTimeMillis(), "test code")
                 .build();
         Request request = new Request.Builder()
                 .url("http://127.0.0.1:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
@@ -60,7 +62,7 @@ public class Spider {
         if (beenTo.contains(url)){
             return false;
         }
-        if(limit <= beenTo.size()) return false;
+        System.out.println(beenTo.size());
         ArrayList<Thread> threads = new ArrayList<>();
         beenTo.add(url);
         try{
@@ -77,36 +79,28 @@ public class Spider {
             Elements linksOnPage = htmlDocument.select("a[href]");
             gson.toJson(new IndexedDb(htmlDocument.title(), "", url), IndexedDb.class, writer);
             for (Element link : linksOnPage) {
+                if(limit <= beenTo.size()) break;
                 String href = link.absUrl("href");
                 if(!FILTERS.matcher(href).matches()){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
-                        Thread thread = new Thread(() -> {
                             crawl(href);
-                        });
-                        threads.add(thread);
-                        thread.start();
                     }
-
-
                     }
-
-
             }
+            outputStream.close();
             return true;
         } catch (IOException ioe) {
             // We were not successful in our HTTP request
             return false;
         }
     }
-    public static File createTempDirectory()
+    public File createTempDirectory()
             throws IOException
     {
-        final File temp;
 
         temp = File.createTempFile("temp", "file");
 
         outputStream = new FileOutputStream(temp);
-
 
         if(!(temp.delete()))
         {
@@ -117,6 +111,7 @@ public class Spider {
         {
             throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
         }
+        System.out.println(temp.toURI());
 
         return (temp);
     }

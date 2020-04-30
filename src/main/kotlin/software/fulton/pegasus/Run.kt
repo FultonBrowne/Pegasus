@@ -16,7 +16,7 @@ object Run {
         val spider = Spider()
         spider.limit = 10
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
-        val ipfs = IPFS("/ip4/209.94.90.1/tcp/5001")
+        //val ipfs = IPFS("/ip4/209.94.90.1/tcp/5001")
         while (true) {
             val scanner = Scanner(System.`in`)
             val nextLine = scanner.nextLine()
