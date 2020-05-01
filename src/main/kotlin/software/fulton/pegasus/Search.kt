@@ -12,7 +12,7 @@ import java.util.*
 class Search() {
     private val ipfs = IPFS("/ip4/127.0.0.1/tcp/5001")
     init {
-        ipfs.refs.local()
+        //ipfs.refs.local()
     }
     fun searchForResult(string: String, fileName:String){
         val fromBase58 = Multihash.fromBase58(fileName)
@@ -25,7 +25,7 @@ class Search() {
         while (reader.hasNext()) {
             val message:IndexedDb = gson.fromJson(reader, IndexedDb::class.java)
             searchWords.forEach { it1: String? ->
-                if (it1?.let { it2 -> message.name.contains(it2) }!!) println(message.name)
+                if (it1?.let { it2 -> message.name.contains(it2,true) }!!) println(message.name)
             }
         }
         reader.endArray()

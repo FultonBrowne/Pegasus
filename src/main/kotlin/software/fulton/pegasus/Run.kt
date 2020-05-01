@@ -27,13 +27,14 @@ object Run {
                 .asString()
         println(response.body)
         hash = JsonParser.parseString(response.body).asJsonObject.get("Hash").asString
+        println(hash)
         //val ipfs = IPFS("/ip4/209.94.90.1/tcp/5001")
         while (true) {
             val scanner = Scanner(System.`in`)
             val nextLine = scanner.nextLine()
             if (nextLine.equals("x")) return
             val search = Search()
-            search.searchForResult(nextLine, "")
+            search.searchForResult(nextLine, hash)
         }
 
 

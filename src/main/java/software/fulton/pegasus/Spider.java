@@ -28,7 +28,7 @@ public class Spider {
     private final ArrayList<String> beenTo = new ArrayList<String>();
     Gson gson = new Gson();
     JsonWriter writer;
-     File temp;
+    File temp;
     public int limit;
     final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
