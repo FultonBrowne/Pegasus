@@ -43,7 +43,7 @@ public class Spider {
                 .url("http://127.0.0.1:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
                 .method("POST", body)
                 .build();
-        Response response = client.newCall(request).execute();
+        //Response response = client.newCall(request).execute();
         writer = new JsonWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 
         writer.beginArray();
@@ -87,7 +87,6 @@ public class Spider {
                     }
                     }
             }
-            outputStream.close();
             return true;
         } catch (IOException ioe) {
             // We were not successful in our HTTP request
@@ -107,7 +106,7 @@ public class Spider {
             throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
         }
 
-        if(!(temp.mkdir()))
+        if(!(temp.createNewFile()))
         {
             throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
         }

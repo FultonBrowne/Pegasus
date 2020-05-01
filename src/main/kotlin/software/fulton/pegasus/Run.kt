@@ -1,7 +1,5 @@
 package software.fulton.pegasus
 
-import io.ipfs.api.IPFS
-import io.ipfs.api.NamedStreamable
 import java.util.*
 
 
@@ -16,6 +14,9 @@ object Run {
         val spider = Spider()
         spider.limit = 10
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
+        spider.writer.endArray()
+        spider.writer.close()
+        spider.outputStream.close()
         //val ipfs = IPFS("/ip4/209.94.90.1/tcp/5001")
         while (true) {
             val scanner = Scanner(System.`in`)
