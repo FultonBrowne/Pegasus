@@ -17,6 +17,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class Spider {
@@ -70,15 +73,26 @@ public class Spider {
                 return false;
             }
             Elements linksOnPage = htmlDocument.select("a[href]");
+            ExecutorService executorService = Executors.newFixedThreadPool(10);
             gson.toJson(new IndexedDb(htmlDocument.title(), "", url), IndexedDb.class, writer);
             for (Element link : linksOnPage) {
                 if(limit <= beenTo.size()) break;
                 String href = link.absUrl("href");
                 if(!FILTERS.matcher(href).matches()){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
-                            crawl(href);
+                            executorService.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    crawl(href);
+                                }
+                            });
                     }
                     }
+            }
+            executorService.shutdown();
+            try {
+                executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException e) {
             }
             return true;
         } catch (IOException ioe) {

@@ -6,7 +6,7 @@ import java.util.*
 
 
 object Run {
-    var hash = ""
+    private var hash = ""
     @JvmStatic
     fun main(args: Array<String>){
         println("go")
@@ -15,7 +15,7 @@ object Run {
 
         // Instantiate the controller for this crawl.
         val spider = Spider()
-        spider.limit = 1000000000
+        spider.limit = 10000
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
         spider.writer.endArray()
         spider.writer.close()
@@ -28,11 +28,10 @@ object Run {
         println(response.body)
         hash = JsonParser.parseString(response.body).asJsonObject.get("Hash").asString
         println(hash)
-        //val ipfs = IPFS("/ip4/209.94.90.1/tcp/5001")
         while (true) {
             val scanner = Scanner(System.`in`)
             val nextLine = scanner.nextLine()
-            if (nextLine.equals("x")) return
+            if (nextLine == "x") return
             val search = Search()
             println(search.searchForResult(nextLine, hash))
         }
