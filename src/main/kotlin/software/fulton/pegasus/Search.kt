@@ -5,13 +5,13 @@ import com.google.gson.stream.JsonReader
 import io.ipfs.api.IPFS
 import io.ipfs.multihash.Multihash
 import java.io.InputStreamReader
-import java.lang.System.`in`
 import java.util.*
+import kotlin.Comparator
 
 
 class Search() {
     private val ipfs = IPFS("/ip4/127.0.0.1/tcp/5001")
-    fun searchForResult(string: String, fileName:String){
+    fun searchForResult(string: String, fileName:String): String? {
         val fromBase58 = Multihash.fromBase58(fileName)
         val catStream = ipfs.catStream(fromBase58)
         val searchData = arrayListOf<SearchData>()
@@ -31,6 +31,9 @@ class Search() {
         }
         reader.endArray()
         reader.close()
+        searchData.sortWith(Comparator { o1, o2 -> o1.weight.compareTo(o2.weight) })
+
+        return Gson().toJson(searchData)
     }
 
 }

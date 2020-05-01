@@ -34,7 +34,7 @@ object Run {
             val nextLine = scanner.nextLine()
             if (nextLine.equals("x")) return
             val search = Search()
-            search.searchForResult(nextLine, hash)
+            println(search.searchForResult(nextLine, hash))
         }
 
 
