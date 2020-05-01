@@ -99,7 +99,6 @@ public class Spider {
 
         temp = File.createTempFile("temp", "file");
 
-        outputStream = new FileOutputStream(temp);
 
         if(!(temp.delete()))
         {
@@ -111,6 +110,8 @@ public class Spider {
             throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
         }
         System.out.println(temp.toURI());
+        outputStream = new FileOutputStream(temp);
+
 
         return (temp);
     }
