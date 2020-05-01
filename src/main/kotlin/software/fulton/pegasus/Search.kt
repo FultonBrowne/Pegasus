@@ -11,9 +11,6 @@ import java.util.*
 
 class Search() {
     private val ipfs = IPFS("/ip4/127.0.0.1/tcp/5001")
-    init {
-        //ipfs.refs.local()
-    }
     fun searchForResult(string: String, fileName:String){
         val fromBase58 = Multihash.fromBase58(fileName)
         val catStream = ipfs.catStream(fromBase58)
@@ -23,10 +20,14 @@ class Search() {
         val reader = JsonReader(InputStreamReader(catStream, "UTF-8"))
         reader.beginArray()
         while (reader.hasNext()) {
+            var weight = 0
             val message:IndexedDb = gson.fromJson(reader, IndexedDb::class.java)
             searchWords.forEach { it1: String? ->
-                if (it1?.let { it2 -> message.name.contains(it2,true) }!!) println(message.name)
+                if (it1?.let { it2 -> message.name.contains(it2,true) }!!) weight = weight + 10
+                if (message.description.contains(it1, true )) weight = weight +  7
+                if (message.link.contains(it1, true)) weight = weight + 2
             }
+            if(weight != 0)searchData.add(SearchData(message.name, message.description, message.link, weight))
         }
         reader.endArray()
         reader.close()
