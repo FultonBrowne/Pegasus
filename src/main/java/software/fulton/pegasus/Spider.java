@@ -2,6 +2,9 @@ package software.fulton.pegasus;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import okhttp3.*;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -25,25 +28,15 @@ public class Spider {
     private final ArrayList<String> beenTo = new ArrayList<String>();
     Gson gson = new Gson();
     JsonWriter writer;
-    private File temp;
+     File temp;
     public int limit;
     final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp4|zip|gz))$");
 
-    public Spider() throws IOException {
+    public Spider() throws IOException, UnirestException {
         createTempDirectory();
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .build();
-        MediaType mediaType = MediaType.parse("text/plain");
-        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("snapshot" + System.currentTimeMillis(), "test code")
-                .build();
-        Request request = new Request.Builder()
-                .url("http://127.0.0.1:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
-                .method("POST", body)
-                .build();
-        //Response response = client.newCall(request).execute();
+
         writer = new JsonWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 
         writer.beginArray();
