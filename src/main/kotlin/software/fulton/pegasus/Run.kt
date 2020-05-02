@@ -2,6 +2,11 @@ package software.fulton.pegasus
 
 import com.google.gson.JsonParser
 import com.mashape.unirest.http.Unirest
+import com.sun.net.httpserver.HttpExchange
+import com.sun.net.httpserver.HttpHandler
+import com.sun.net.httpserver.HttpServer
+import java.io.IOException
+import java.net.InetSocketAddress
 import java.util.*
 
 
@@ -18,7 +23,7 @@ object Run {
         spider.limit = 100
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
         while (!spider.executorService.isShutdown);
-        Thread.sleep(3000)
+        Thread.sleep(7000)
         spider.writer.endArray()
         spider.writer.close()
         spider.outputStream.close()
@@ -30,6 +35,11 @@ object Run {
         println(response.body)
         hash = JsonParser.parseString(response.body).asJsonObject.get("Hash").asString
         println(hash)
+        val server: HttpServer = HttpServer.create(InetSocketAddress(8000), 0)
+        server.createContext("/search", MyHandler())
+        server.setExecutor(null) // creates a default executor
+
+        server.start()
         while (true) {
             val scanner = Scanner(System.`in`)
             val nextLine = scanner.nextLine()
@@ -39,5 +49,19 @@ object Run {
         }
 
 
+
+    }
+    internal class MyHandler : HttpHandler {
+        @Throws(IOException::class)
+        override fun handle(t: HttpExchange) {
+            println(t.requestURI.toASCIIString().replace("/search/",""))
+            val search = Search()
+            val response = search.searchForResult(t.requestURI.toASCIIString().replace("/search/",""), hash)!!
+            println(response)
+            t.sendResponseHeaders(200, response.length.toLong())
+            val os = t.responseBody
+            os.write(response.toByteArray())
+            os.close()
+        }
     }
 }

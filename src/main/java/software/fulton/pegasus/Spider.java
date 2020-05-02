@@ -71,7 +71,7 @@ public class Spider {
                 return false;
             }
             Elements linksOnPage = htmlDocument.select("a[href]");
-            try{gson.toJson(new IndexedDb(htmlDocument.title(), htmlDocument.text(), url), IndexedDb.class, writer);}
+            try{gson.toJson(new IndexedDb(htmlDocument.title(), htmlDocument.text().substring(0, 80), url), IndexedDb.class, writer);}
             catch (Exception e){}
             for (Element link : linksOnPage) {
                 if(limit <= beenTo.size()) {
