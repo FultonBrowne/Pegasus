@@ -1,5 +1,15 @@
 <title>Search the D-web</title>
-<head></head>
+<head>
+    <script>
+        function search(){
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", "", false ); // false for synchronous request
+        xmlHttp.send( null );
+        var text = xmlHttp.responseText;
+        var data = JSON.parse(text)
+        }
+    </script>
+</head>
 <h1>Search the D-web</h1>
 <input type="text">
 <button>Search</button>
