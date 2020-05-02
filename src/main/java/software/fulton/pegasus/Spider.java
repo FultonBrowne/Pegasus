@@ -2,10 +2,7 @@ package software.fulton.pegasus;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import okhttp3.*;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,13 +10,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class Spider {
@@ -56,7 +49,10 @@ public class Spider {
      * @return whether or not the crawl was successful
      */
     public boolean crawl(String url) {
-        if(limit <= beenTo.size()) return true;
+        if(limit <= beenTo.size()) {
+            executorService.shutdownNow();
+            return true;
+        }
         if (beenTo.contains(url)){
             return false;
         }
@@ -75,7 +71,8 @@ public class Spider {
                 return false;
             }
             Elements linksOnPage = htmlDocument.select("a[href]");
-            gson.toJson(new IndexedDb(htmlDocument.title(), "", url), IndexedDb.class, writer);
+            try{gson.toJson(new IndexedDb(htmlDocument.title(), "", url), IndexedDb.class, writer);}
+            catch (Exception e){}
             for (Element link : linksOnPage) {
                 if(limit <= beenTo.size()) {
                     executorService.shutdownNow();

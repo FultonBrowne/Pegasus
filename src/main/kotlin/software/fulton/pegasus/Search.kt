@@ -32,6 +32,7 @@ class Search() {
         reader.endArray()
         reader.close()
         searchData.sortWith(Comparator { o1, o2 -> o1.weight.compareTo(o2.weight) })
+        searchData.reverse()
 
         return Gson().toJson(searchData)
     }
