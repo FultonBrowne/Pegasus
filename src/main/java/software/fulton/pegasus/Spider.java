@@ -31,7 +31,7 @@ public class Spider {
     private final ArrayList<String> beenTo = new ArrayList<String>();
     Gson gson = new Gson();
     JsonWriter writer;
-   static ExecutorService executorService = Executors.newFixedThreadPool(10);
+   ExecutorService executorService = Executors.newFixedThreadPool(10);
     File temp;
     public int limit;
     final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
@@ -56,6 +56,7 @@ public class Spider {
      * @return whether or not the crawl was successful
      */
     public boolean crawl(String url) {
+        if(limit <= beenTo.size()) return true;
         if (beenTo.contains(url)){
             return false;
         }
@@ -76,7 +77,9 @@ public class Spider {
             Elements linksOnPage = htmlDocument.select("a[href]");
             gson.toJson(new IndexedDb(htmlDocument.title(), "", url), IndexedDb.class, writer);
             for (Element link : linksOnPage) {
-                if(limit <= beenTo.size()) break;
+                if(limit <= beenTo.size()) {
+                    executorService.shutdownNow();
+                    return true;}
                 String href = link.absUrl("href");
                 if(!FILTERS.matcher(href).matches()){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {

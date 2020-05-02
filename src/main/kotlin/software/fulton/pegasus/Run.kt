@@ -15,9 +15,9 @@ object Run {
 
         // Instantiate the controller for this crawl.
         val spider = Spider()
-        spider.limit = 10000
+        spider.limit = 100
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
-        while (!Spider.executorService.isShutdown);
+        while (!spider.executorService.isShutdown);
 
         spider.writer.endArray()
         spider.writer.close()
