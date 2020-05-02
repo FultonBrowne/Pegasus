@@ -17,6 +17,8 @@ object Run {
         val spider = Spider()
         spider.limit = 10000
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
+        while (!Spider.executorService.isShutdown);
+
         spider.writer.endArray()
         spider.writer.close()
         spider.outputStream.close()

@@ -31,6 +31,7 @@ public class Spider {
     private final ArrayList<String> beenTo = new ArrayList<String>();
     Gson gson = new Gson();
     JsonWriter writer;
+   static ExecutorService executorService = Executors.newFixedThreadPool(10);
     File temp;
     public int limit;
     final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
@@ -73,7 +74,6 @@ public class Spider {
                 return false;
             }
             Elements linksOnPage = htmlDocument.select("a[href]");
-            ExecutorService executorService = Executors.newFixedThreadPool(10);
             gson.toJson(new IndexedDb(htmlDocument.title(), "", url), IndexedDb.class, writer);
             for (Element link : linksOnPage) {
                 if(limit <= beenTo.size()) break;
@@ -88,11 +88,6 @@ public class Spider {
                             });
                     }
                     }
-            }
-            executorService.shutdown();
-            try {
-                executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-            } catch (InterruptedException e) {
             }
             return true;
         } catch (IOException ioe) {
