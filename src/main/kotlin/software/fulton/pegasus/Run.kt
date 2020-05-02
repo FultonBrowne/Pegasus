@@ -8,6 +8,7 @@ import com.sun.net.httpserver.HttpServer
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 object Run {
@@ -20,10 +21,10 @@ object Run {
 
         // Instantiate the controller for this crawl.
         val spider = Spider()
-        spider.limit = 100
+        spider.limit = 10000
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
         while (!spider.executorService.isShutdown);
-        Thread.sleep(7000)
+        spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
         spider.writer.endArray()
         spider.writer.close()
         spider.outputStream.close()

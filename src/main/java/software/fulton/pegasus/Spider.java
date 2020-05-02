@@ -24,7 +24,7 @@ public class Spider {
     private final ArrayList<String> beenTo = new ArrayList<String>();
     Gson gson = new Gson();
     JsonWriter writer;
-   ExecutorService executorService = Executors.newFixedThreadPool(10);
+   ExecutorService executorService = Executors.newFixedThreadPool(1);
     File temp;
     public int limit;
     final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
@@ -35,9 +35,8 @@ public class Spider {
         createTempDirectory();
 
         writer = new JsonWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-
+        writer.setIndent("  ");
         writer.beginArray();
-
     }
 
 
@@ -50,7 +49,7 @@ public class Spider {
      */
     public boolean crawl(String url) {
         if(limit <= beenTo.size()) {
-            executorService.shutdownNow();
+            executorService.shutdown();
             return true;
         }
         if (beenTo.contains(url)){
@@ -72,10 +71,10 @@ public class Spider {
             }
             Elements linksOnPage = htmlDocument.select("a[href]");
             try{gson.toJson(new IndexedDb(htmlDocument.title(), htmlDocument.text().substring(0, 80), url), IndexedDb.class, writer);}
-            catch (Exception e){}
+            catch (Exception e){e.printStackTrace();}
             for (Element link : linksOnPage) {
                 if(limit <= beenTo.size()) {
-                    executorService.shutdownNow();
+                    executorService.shutdown();
                     return true;}
                 String href = link.absUrl("href");
                 if(!FILTERS.matcher(href).matches()){
