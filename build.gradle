@@ -17,7 +17,7 @@ repositories {
 
 }
 application {
-    mainClassName('com.andromeda.araserver.Run')
+    mainClassName('software.fulton.peagasus.Run')
 }
 
 dependencies {

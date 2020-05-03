@@ -1,14 +1,25 @@
 <title>Search the D-web</title>
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <script>
         function search(){
             var xhr = new XMLHttpRequest();
             var x = document.getElementById("search").value;
+            var output = ""
             xhr.withCredentials = true;
-
             xhr.addEventListener("readystatechange", function() {
             if(this.readyState === 4) {
                 console.log(this.responseText);
+                var json = JSON.parse(this.responseText)
+                var i;
+                for (i = 0; i < json.length; i++) {
+                    var title = json[i].title
+                    var data = json[i].description
+                    var link = json[i].link
+                    output = output + "<p>" + title + "</p> <p>"+ data + "</p><link>"+ link + "</link>"
+                }
+                $(".searchList").html("<ul>" + output + "</ul>")
             }
             });
 
@@ -22,4 +33,7 @@
 <h1>Search the D-web</h1>
 <input type="text" id="search">
 <button onclick="search()">Search</button>
+<div class="searchList">
+    <!-- JSON Here! -->
+  </div>
 </body>
