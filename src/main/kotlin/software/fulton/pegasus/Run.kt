@@ -22,7 +22,7 @@ object Run {
 
         // Instantiate the controller for this crawl.
         val spider = Spider()
-        spider.limit = 100
+        spider.limit = 10
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
         while (!spider.executorService.isShutdown);
         spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
@@ -40,6 +40,7 @@ object Run {
         val http = Http()
         http.start()
         println(http.isAlive)
+
         while (true) {
             val scanner = Scanner(System.`in`)
             val nextLine = scanner.nextLine()
@@ -55,8 +56,14 @@ object Run {
         override fun serve(session: IHTTPSession?): Response {
             super.serve(session)
             val search = Search()
+            println(session?.headers)
             val response = session?.uri?.replace("/search/","")?.let { search.searchForResult(it, hash) }!!
-            return newFixedLengthResponse(response)
+            val newFixedLengthResponse = newFixedLengthResponse(response)
+            newFixedLengthResponse.addHeader("Access-Control-Allow-Origin", session.headers["origin"])
+            newFixedLengthResponse.addHeader("Access-Control-Allow-Credentials", "true")
+            newFixedLengthResponse.addHeader("Access-Control-Allow-Headers", " Origin, Content-Type, X-Auth-Token")
+            newFixedLengthResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
+            return newFixedLengthResponse
 
         }
     }

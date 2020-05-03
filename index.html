@@ -2,13 +2,19 @@
 <head>
     <script>
         function search(){
+            var xhr = new XMLHttpRequest();
             var x = document.getElementById("search").value;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", "http://localhost:8000/search/" + x, false ); // false for synchronous request
-        xmlHttp.send( null );
-        var text = xmlHttp.responseText;
-        var data = JSON.parse(text)
-        console.log(data)
+            xhr.withCredentials = true;
+
+            xhr.addEventListener("readystatechange", function() {
+            if(this.readyState === 4) {
+                console.log(this.responseText);
+            }
+            });
+
+            xhr.open("GET", "http://localhost:8000/search/" + x);
+
+            xhr.send();
         }
     </script>
 </head>
