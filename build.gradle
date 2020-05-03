@@ -22,6 +22,8 @@ application {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile group: 'org.nanohttpd', name: 'nanohttpd', version: '2.3.0'
+
     implementation 'com.github.ipfs:java-ipfs-http-client:v1.2.3'
     implementation("com.squareup.okhttp3:okhttp:4.5.0")
     implementation group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'

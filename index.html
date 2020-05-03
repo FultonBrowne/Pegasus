@@ -2,14 +2,18 @@
 <head>
     <script>
         function search(){
+            var x = document.getElementById("search").value;
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", "", false ); // false for synchronous request
+        xmlHttp.open( "GET", "http://localhost:8000/search/" + x, false ); // false for synchronous request
         xmlHttp.send( null );
         var text = xmlHttp.responseText;
         var data = JSON.parse(text)
+        console.log(data)
         }
     </script>
 </head>
+<body>
 <h1>Search the D-web</h1>
-<input type="text">
-<button>Search</button>
+<input type="text" id="search">
+<button onclick="search()">Search</button>
+</body>

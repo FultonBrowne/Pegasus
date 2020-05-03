@@ -5,6 +5,7 @@ import com.mashape.unirest.http.Unirest
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpHandler
 import com.sun.net.httpserver.HttpServer
+import fi.iki.elonen.NanoHTTPD
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.util.*
@@ -21,7 +22,7 @@ object Run {
 
         // Instantiate the controller for this crawl.
         val spider = Spider()
-        spider.limit = 10000
+        spider.limit = 100
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
         while (!spider.executorService.isShutdown);
         spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
@@ -36,11 +37,9 @@ object Run {
         println(response.body)
         hash = JsonParser.parseString(response.body).asJsonObject.get("Hash").asString
         println(hash)
-        val server: HttpServer = HttpServer.create(InetSocketAddress(8000), 0)
-        server.createContext("/search", MyHandler())
-        server.setExecutor(null) // creates a default executor
-
-        server.start()
+        val http = Http()
+        http.start()
+        println(http.isAlive)
         while (true) {
             val scanner = Scanner(System.`in`)
             val nextLine = scanner.nextLine()
@@ -52,17 +51,13 @@ object Run {
 
 
     }
-    internal class MyHandler : HttpHandler {
-        @Throws(IOException::class)
-        override fun handle(t: HttpExchange) {
-            println(t.requestURI.toASCIIString().replace("/search/",""))
+    internal  class Http:NanoHTTPD(8000){
+        override fun serve(session: IHTTPSession?): Response {
+            super.serve(session)
             val search = Search()
-            val response = search.searchForResult(t.requestURI.toASCIIString().replace("/search/",""), hash)!!
-            println(response)
-            t.sendResponseHeaders(200, response.length.toLong())
-            val os = t.responseBody
-            os.write(response.toByteArray())
-            os.close()
+            val response = session?.uri?.replace("/search/","")?.let { search.searchForResult(it, hash) }!!
+            return newFixedLengthResponse(response)
+
         }
     }
 }
