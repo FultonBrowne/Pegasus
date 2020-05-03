@@ -17,7 +17,7 @@ repositories {
 
 }
 application {
-    mainClassName('software.fulton.peagasus.Run')
+    mainClassName('software.fulton.pegasus.Run')
 }
 
 dependencies {
