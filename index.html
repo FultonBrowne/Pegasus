@@ -17,7 +17,7 @@
                     var title = json[i].title
                     var data = json[i].description
                     var link = json[i].link
-                    output = output + "<p>" + title + "</p> <p>"+ data + "</p><link>"+ link + "</link>"
+                    output = output + "<p>" + title + "</p> <p>"+ data + "</p><a href='"+ link +"'>"+ link + "</a>"
                 }
                 $(".searchList").html("<ul>" + output + "</ul>")
             }

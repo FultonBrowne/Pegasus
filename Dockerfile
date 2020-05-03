@@ -11,6 +11,6 @@ RUN ./gradlew build shadowJar
 FROM openjdk:11.0-jre
 WORKDIR /app
 COPY --from=build /app/build/libs /app
-EXPOSE 80
+EXPOSE 8000
 ENTRYPOINT ["sh", "-c"]
 CMD ["java -jar Pegasus-1.0-SNAPSHOT-all.jar"]
