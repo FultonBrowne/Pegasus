@@ -22,12 +22,16 @@ class Search() {
         while (reader.hasNext()) {
             var weight = 0
             val message:IndexedDb = gson.fromJson(reader, IndexedDb::class.java)
-            searchWords.forEach { it1: String? ->
-                if (it1?.let { it2 -> message.name.contains(it2,true) }!!) weight = weight + 10
-                if (message.description.contains(it1, true )) weight = weight +  7
-                if (message.link.contains(it1, true)) weight = weight + 2
+            val name = " ${message.name} ";
+            val description = " ${message.description} "
+            val link = message.link
+            searchWords.forEach { it1: String ->
+                val it2 = " $it1 "
+                if ( name.contains(it2,true)) weight = weight + 10
+                if (description.contains(it2, true )) weight = weight +  7
+                if (link.contains(it2, true)) weight = weight + 2
             }
-            if(weight != 0)searchData.add(SearchData(message.name, message.description, message.link, weight))
+            if(weight != 0)searchData.add(SearchData(name, description, link, weight))
         }
         reader.endArray()
         reader.close()

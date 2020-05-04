@@ -2,7 +2,6 @@ package software.fulton.pegasus;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,20 +21,19 @@ public class Spider {
     OutputStream outputStream;
     private static final String USER_AGENT =
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1";
-    private final ArrayList<String> beenTo = new ArrayList<String>();
+    private final ArrayList<String> beenTo = new ArrayList<>();
     Gson gson = new Gson();
     JsonWriter writer;
    ExecutorService executorService = Executors.newFixedThreadPool(1);
     File temp;
     public int limit;
-    final ArrayList<IndexedDb> indexedDbs = new ArrayList<>();
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp4|zip|gz))$");
 
-    public Spider() throws IOException, UnirestException {
+    public Spider() throws IOException {
         createTempDirectory();
 
-        writer = new JsonWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+        writer = new JsonWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
         writer.setIndent("  ");
         writer.beginArray();
     }
@@ -56,16 +55,10 @@ public class Spider {
             return false;
         }
         System.out.println(beenTo.size());
-        ArrayList<Thread> threads = new ArrayList<>();
         beenTo.add(url);
         try{
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
             Document htmlDocument = connection.get();
-            if (connection.response().statusCode() == 200) // 200 is the HTTP OK status code
-            // indicating that everything is great.
-            {
-
-            }
             if (!connection.response().contentType().contains("text/html")) {
                 return false;
             }
@@ -79,12 +72,7 @@ public class Spider {
                 String href = link.absUrl("href");
                 if(!FILTERS.matcher(href).matches() && !href.contains("QmdA5WkDNALetBn4iFeSepHjdLGJdxPBwZyY47ir1bZGAK")){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
-                            executorService.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    crawl(href);
-                                }
-                            });
+                            executorService.execute(() -> crawl(href));
                     }
                     }
             }
@@ -94,7 +82,7 @@ public class Spider {
             return false;
         }
     }
-    public File createTempDirectory()
+    public void createTempDirectory()
             throws IOException
     {
 
@@ -114,7 +102,6 @@ public class Spider {
         outputStream = new FileOutputStream(temp);
 
 
-        return (temp);
     }
 
 }
