@@ -77,7 +77,7 @@ public class Spider {
                     executorService.shutdown();
                     return true;}
                 String href = link.absUrl("href");
-                if(!FILTERS.matcher(href).matches()){
+                if(!FILTERS.matcher(href).matches() && !href.contains("QmdA5WkDNALetBn4iFeSepHjdLGJdxPBwZyY47ir1bZGAK")){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
                             executorService.execute(new Runnable() {
                                 @Override
