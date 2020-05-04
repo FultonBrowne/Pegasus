@@ -2,13 +2,7 @@ package software.fulton.pegasus
 
 import com.google.gson.JsonParser
 import com.mashape.unirest.http.Unirest
-import com.sun.net.httpserver.HttpExchange
-import com.sun.net.httpserver.HttpHandler
-import com.sun.net.httpserver.HttpServer
 import fi.iki.elonen.NanoHTTPD
-import java.io.IOException
-import java.net.InetSocketAddress
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -22,7 +16,7 @@ object Run {
 
         // Instantiate the controller for this crawl.
         val spider = Spider()
-        spider.limit = 10
+        spider.limit = 50000
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
         while (!spider.executorService.isShutdown);
         spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
@@ -40,14 +34,7 @@ object Run {
         val http = Http()
         http.start()
         println(http.isAlive)
-
-        while (true) {
-            val scanner = Scanner(System.`in`)
-            val nextLine = scanner.nextLine()
-            if (nextLine == "x") return
-            val search = Search()
-            println(search.searchForResult(nextLine, hash))
-        }
+        while (http.isAlive);
 
 
 
