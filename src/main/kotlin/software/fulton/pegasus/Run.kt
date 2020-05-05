@@ -3,6 +3,7 @@ package software.fulton.pegasus
 import com.google.gson.JsonParser
 import com.mashape.unirest.http.Unirest
 import fi.iki.elonen.NanoHTTPD
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -16,7 +17,7 @@ object Run {
 
         // Instantiate the controller for this crawl.
         val spider = Spider()
-        spider.limit = 10
+        spider.limit = 50000
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
         while (!spider.executorService.isShutdown);
         spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
@@ -34,6 +35,17 @@ object Run {
         val http = Http()
         http.start()
         println(http.isAlive)
+        val timer =  object : TimerTask() {
+            override fun run() {
+                spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
+                while (!spider.executorService.isShutdown);
+                spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
+                spider.writer.endArray()
+                spider.writer.close()
+                spider.outputStream.close()
+            }
+        }
+        Timer().schedule(timer,0, 1000* 60 * 60 *24)
         while (http.isAlive);
 
 
