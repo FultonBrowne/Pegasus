@@ -26,7 +26,9 @@ class Search() {
             val description = " ${message.description} "
             val link = message.link
             searchWords.forEach { it1: String ->
-                val it2 = " $it1 "
+                val it2 = " $it1"
+                println(it2)
+                println(name)
                 if ( name.contains(it2,true)) weight = weight + 10
                 if (description.contains(it2, true )) weight = weight +  7
                 if (link.contains(it2, true)) weight = weight + 2
