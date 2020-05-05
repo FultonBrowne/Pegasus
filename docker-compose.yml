@@ -1,0 +1,13 @@
+version: "2"
+services:
+  web:
+    image: fulton/pegasus
+    ports:
+      - 8000:8000
+    depends_on:
+      - ipfs
+  ipfs:
+    image: ipfs/go-ipfs
+    ports:
+      - 5001:5001
+      - 8080:8080
