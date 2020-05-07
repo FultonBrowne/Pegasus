@@ -17,7 +17,7 @@ object Run {
 
         // Instantiate the controller for this crawl.
         val spider = Spider()
-        spider.limit = 50000
+        spider.limit = 10
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
         while (!spider.executorService.isShutdown);
         spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
@@ -26,7 +26,7 @@ object Run {
         spider.outputStream.close()
         Unirest.setTimeouts(0, 0)
         val response =
-            Unirest.post("http://0.0.0.0:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
+            Unirest.post("http://localhost:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
                 .field("the-internet-as-of${System.currentTimeMillis()}",spider.temp)
                 .asString()
         println(response.body)
@@ -37,6 +37,7 @@ object Run {
         println(http.isAlive)
         val timer =  object : TimerTask() {
             override fun run() {
+                val spider = Spider()
                 spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
                 while (!spider.executorService.isShutdown);
                 spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
@@ -45,14 +46,14 @@ object Run {
                 spider.outputStream.close()
                 Unirest.setTimeouts(0, 0)
                 val response =
-                    Unirest.post("http://0.0.0.0:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
+                    Unirest.post("http://localhost:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
                         .field("the-internet-as-of${System.currentTimeMillis()}",spider.temp)
                         .asString()
                 println(response.body)
                 hash = JsonParser.parseString(response.body).asJsonObject.get("Hash").asString
             }
         }
-        Timer().schedule(timer,0, 1000* 60 * 60 *24)
+        Timer().schedule(timer,1000* 60 * 60 *24, 1000* 60 * 60 *24)
         while (http.isAlive);
 
 
@@ -63,7 +64,7 @@ object Run {
             super.serve(session)
             val search = Search()
             println(session?.headers)
-            val response = session?.uri?.replace("/search/","")?.let { search.searchForResult(it, hash) }!!
+            val response = session?.uri?.replace("/search/","")?.let { search.searchv2(it, hash) }!!
             val newFixedLengthResponse = newFixedLengthResponse(response)
             newFixedLengthResponse.addHeader("Access-Control-Allow-Origin", session.headers["origin"])
             newFixedLengthResponse.addHeader("Access-Control-Allow-Credentials", "true")
