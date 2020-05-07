@@ -26,7 +26,7 @@ object Run {
         spider.outputStream.close()
         Unirest.setTimeouts(0, 0)
         val response =
-            Unirest.post("http://127.0.0.1:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
+            Unirest.post("http://0.0.0.0:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
                 .field("the-internet-as-of${System.currentTimeMillis()}",spider.temp)
                 .asString()
         println(response.body)
@@ -43,6 +43,13 @@ object Run {
                 spider.writer.endArray()
                 spider.writer.close()
                 spider.outputStream.close()
+                Unirest.setTimeouts(0, 0)
+                val response =
+                    Unirest.post("http://0.0.0.0:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
+                        .field("the-internet-as-of${System.currentTimeMillis()}",spider.temp)
+                        .asString()
+                println(response.body)
+                hash = JsonParser.parseString(response.body).asJsonObject.get("Hash").asString
             }
         }
         Timer().schedule(timer,0, 1000* 60 * 60 *24)
