@@ -45,7 +45,7 @@ object Run {
                 spider.outputStream.close()
                 Unirest.setTimeouts(0, 0)
                 val response =
-                    Unirest.post("http://0.0.0.0:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
+                    Unirest.post("http://ipfs:5001/api/v0/add?chunker=size-262144&hash=sha2-256&inline-limit=32")
                         .field("the-internet-as-of${System.currentTimeMillis()}",spider.temp)
                         .asString()
                 println(response.body)
