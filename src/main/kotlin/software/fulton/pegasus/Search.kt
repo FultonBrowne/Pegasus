@@ -21,7 +21,7 @@ import java.io.InputStreamReader
 
 
 class Search() {
-    private val ipfs = IPFS("/ip4/127.0.0.1/tcp/5001")
+    private val ipfs = IPFS("http://ipfs", 5001)
     fun searchForResult(string: String, fileName:String): String? {
         val fromBase58 = Multihash.fromBase58(fileName)
         val catStream = ipfs.catStream(fromBase58)
