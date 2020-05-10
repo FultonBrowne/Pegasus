@@ -74,7 +74,7 @@ public class Spider {
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
                             executorService.execute(() -> crawl(href));
                     }
-                    }
+                }
             }
             return true;
         } catch (IOException ioe) {
