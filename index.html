@@ -1,5 +1,38 @@
-<title>Search the D-web</title>
+<title>Pegasus - Search the D-web</title>
 <head>
+    <style>
+    html, body {
+        height: 50%;
+        }
+
+    html {
+        display: table;
+        margin: auto;
+    }
+    h1{
+        color: white;
+        text-align: center;
+    }
+    body {
+        display: table-cell;
+        vertical-align: middle;
+        background-color: darkslategray;
+    }
+
+footer {
+    position: fixed;
+    height: 20px;    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
+}
+    .round {
+    width: 100%;
+    border-radius: 15px;
+    border: 1px #000 solid;
+    padding: 5px 5px 5px 25px;
+}
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <script>
@@ -31,10 +64,11 @@
     </script>
 </head>
 <body>
-<h1>Search the D-web</h1>
-<input type="text" id="search">
-<button onclick="search()">Search</button>
+<h1>Pegasus</h1>
+<input type="text" id="search" class="round">
+<button onclick="search()" style="display: block; margin: 0 auto;">Search</button>
 <div class="searchList">
     <!-- JSON Here! -->
   </div>
 </body>
+<footer>Donate eth here: 0xe7D960Ee16d6fCddeB66B0AFBBfa051f61ef0e6C</footer>
