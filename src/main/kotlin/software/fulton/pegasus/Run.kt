@@ -19,8 +19,6 @@ object Run {
         val spider = Spider()
         spider.limit = 20000
         spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
-        while (!spider.executorService.isShutdown);
-        spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
         spider.writer.endArray()
         spider.writer.close()
         spider.outputStream.close()
@@ -38,8 +36,6 @@ object Run {
         val timer =  object : TimerTask() {
             override fun run() {
                 spider.crawl("https://gateway.ipfs.io/ipns/awesome.ipfs.io/")
-                while (!spider.executorService.isShutdown);
-                spider.executorService.awaitTermination(60, TimeUnit.SECONDS)
                 spider.writer.endArray()
                 spider.writer.close()
                 spider.outputStream.close()
