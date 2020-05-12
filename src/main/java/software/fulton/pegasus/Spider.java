@@ -56,9 +56,9 @@ public class Spider {
         beenTo.add(url);
         try{
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
-            if (!connection.response().contentType().contains("text/html")) {
-                return false;
-            }
+            connection.maxBodySize(10000);
+            System.out.println(connection.response().contentType());
+
             Document htmlDocument = connection.get();
 
             Elements linksOnPage = htmlDocument.select("a[href]");
