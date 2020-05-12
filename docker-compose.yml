@@ -7,9 +7,8 @@ services:
     depends_on:
       - ipfs
   ipfs:
-    image: ipfs/go-ipfs:v0.4.16
+    image: ipfs/go-ipfs
     user: ipfs
-    command: [ "daemon", "--enable-pubsub-experiment" ]
     ports:
       - 5001:5001
       - 8080:8080

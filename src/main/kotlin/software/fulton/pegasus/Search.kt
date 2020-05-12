@@ -18,13 +18,13 @@ import org.apache.lucene.search.Query
 import org.apache.lucene.store.Directory
 import org.apache.lucene.store.RAMDirectory
 import java.io.InputStreamReader
+import java.net.URL
 
 
 class Search() {
-    private val ipfs = IPFS("ipfs", 5001)
     fun searchForResult(string: String, fileName:String): String? {
         val fromBase58 = Multihash.fromBase58(fileName)
-        val catStream = ipfs.catStream(fromBase58)
+        val catStream = URL("https://ipfs.io/ipfs/$fromBase58").openConnection().getInputStream()
         val searchData = arrayListOf<SearchData>()
         val searchWords = Utils().parseWord(string)
         val gson = Gson()
@@ -52,43 +52,6 @@ class Search() {
         searchData.reverse()
 
         return Gson().toJson(searchData)
-    }
-    fun searchv2(string: String, fileName:String): String? {
-        val fromBase58 = Multihash.fromBase58(fileName)
-        val catStream = ipfs.catStream(fromBase58)
-        val searchData = arrayListOf<SearchData>()
-        val searchWords = Utils().parseWord(string)
-        val gson = Gson()
-        val reader = JsonReader(InputStreamReader(catStream, "UTF-8"))
-        reader.beginArray()
-        val memoryIndex: Directory = RAMDirectory()
-        val analyzer = StandardAnalyzer()
-        val indexWriterConfig = IndexWriterConfig(analyzer)
-        val writter = IndexWriter(memoryIndex, indexWriterConfig)
-        while (reader.hasNext()) {
-            var weight = 0
-            val message:IndexedDb = gson.fromJson(reader, IndexedDb::class.java)
-            val name = " ${message.name} ";
-            val description = " ${message.description} "
-            val link = message.link
-            val document = Document()
-            document.add(TextField("title", name, Field.Store.YES))
-            document.add(TextField("description", description, Field.Store.YES))
-            document.add(TextField("link", link, Field.Store.YES))
-            writter.addDocument(document)
-
-        }
-        writter.close()
-        val indexReader = DirectoryReader.open(memoryIndex);
-        val indexSearcher = IndexSearcher(indexReader)
-        val search = indexSearcher.search(FuzzyQuery(Term("description", string)), 10)
-        search.scoreDocs.forEach {
-            val doc = indexSearcher.doc(it.doc)
-            searchData.add(SearchData(doc["title"], doc["description"], doc["link"], 0))
-        }
-        reader.endArray()
-        reader.close()
-        return gson.toJson(searchData)
     }
 
 }
