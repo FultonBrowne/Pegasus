@@ -46,6 +46,7 @@ public class Spider {
      * @return whether or not the crawl was successful
      */
     public boolean crawl(String url) {
+        System.gc();
         if(limit <= beenTo.size()) {
             return true;
         }
@@ -57,6 +58,7 @@ public class Spider {
         try{
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
             connection = connection.maxBodySize(50000);
+            System.out.println(connection.execute().contentType());
             System.out.println(connection.response().contentType());
             Document htmlDocument = connection.get();
             Elements linksOnPage = htmlDocument.select("a[href]");
