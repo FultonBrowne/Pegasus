@@ -56,7 +56,7 @@ public class Spider {
         beenTo.add(url);
         try{
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
-            connection.maxBodySize(10000);
+            connection.maxBodySize(100000);
             System.out.println(connection.response().contentType());
 
             Document htmlDocument = connection.get();
