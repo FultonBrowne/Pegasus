@@ -58,13 +58,14 @@ public class Spider {
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
             connection.maxBodySize(50000);
             System.out.println(connection.response().contentType());
+
             Document htmlDocument = connection.get();
 
             Elements linksOnPage = htmlDocument.select("a[href]");
             try{
                 String inputString = htmlDocument.text();
                 int maxLength = Math.min(inputString.length(), 80);
-                gson.toJson(new IndexedDb(htmlDocument.title(), inputString, url), IndexedDb.class, writer);}
+                gson.toJson(new IndexedDb(htmlDocument.title(), inputString.substring(0, maxLength), url), IndexedDb.class, writer);}
             catch (Exception e){e.printStackTrace();}
             for (Element link : linksOnPage) {
                 if(limit <= beenTo.size()) {
@@ -79,6 +80,7 @@ public class Spider {
             return true;
         } catch (Exception ioe) {
             // We were not successful in our HTTP request
+            ioe.printStackTrace();
             return false;
         }
     }
