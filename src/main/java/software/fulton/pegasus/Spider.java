@@ -62,7 +62,10 @@ public class Spider {
             Document htmlDocument = connection.get();
 
             Elements linksOnPage = htmlDocument.select("a[href]");
-            try{gson.toJson(new IndexedDb(htmlDocument.title(), htmlDocument.text().substring(0, 80), url), IndexedDb.class, writer);}
+            try{
+                String inputString = htmlDocument.text();
+                int maxLength = Math.min(inputString.length(), 80);
+                gson.toJson(new IndexedDb(htmlDocument.title(), inputString.substring(0, maxLength), url), IndexedDb.class, writer);}
             catch (Exception e){e.printStackTrace();}
             for (Element link : linksOnPage) {
                 if(limit <= beenTo.size()) {
