@@ -56,10 +56,11 @@ public class Spider {
         beenTo.add(url);
         try{
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
-            Document htmlDocument = connection.get();
             if (!connection.response().contentType().contains("text/html")) {
                 return false;
             }
+            Document htmlDocument = connection.get();
+
             Elements linksOnPage = htmlDocument.select("a[href]");
             try{gson.toJson(new IndexedDb(htmlDocument.title(), htmlDocument.text().substring(0, 80), url), IndexedDb.class, writer);}
             catch (Exception e){e.printStackTrace();}
