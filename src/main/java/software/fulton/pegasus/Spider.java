@@ -74,7 +74,7 @@ public class Spider {
                 }
             }
             return true;
-        } catch (IOException ioe) {
+        } catch (Exception ioe) {
             // We were not successful in our HTTP request
             return false;
         }
