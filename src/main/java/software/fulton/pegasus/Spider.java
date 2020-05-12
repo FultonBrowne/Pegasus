@@ -24,6 +24,7 @@ public class Spider {
     private final ArrayList<String> beenTo = new ArrayList<>();
     Gson gson = new Gson();
     JsonWriter writer;
+    ExecutorService executorService = Executors.newFixedThreadPool(1);
     File temp;
     public int limit;
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
@@ -47,6 +48,7 @@ public class Spider {
      */
     public boolean crawl(String url) {
         if(limit <= beenTo.size()) {
+            executorService.shutdown();
             return true;
         }
         if (beenTo.contains(url)){
@@ -65,11 +67,12 @@ public class Spider {
             catch (Exception e){e.printStackTrace();}
             for (Element link : linksOnPage) {
                 if(limit <= beenTo.size()) {
+                    executorService.shutdown();
                     return true;}
                 String href = link.absUrl("href");
                 if(!FILTERS.matcher(href).matches() && !href.contains("QmdA5WkDNALetBn4iFeSepHjdLGJdxPBwZyY47ir1bZGAK") && !href.contains("QmNoscE3kNc83dM5rZNUC5UDXChiTdDcgf16RVtFCRWYuU") && !href.contains("QmbsZEvJE8EU51HCUHQg2aem9JNFmFHdva3tGVYutdCXHp")){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
-                            crawl(href);
+                        executorService.execute(() -> crawl(href));
                     }
                 }
             }
