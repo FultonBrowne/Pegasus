@@ -62,6 +62,7 @@ public class Spider {
         beenTo.add(url);
         try{
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
+            connection.execute();
             System.out.println(connection.response().contentType());
             if(!connection.response().contentType().contains("text/html")){
                 return false;
