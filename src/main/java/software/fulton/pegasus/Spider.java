@@ -6,6 +6,7 @@ import com.google.gson.stream.JsonWriter;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import io.ipfs.multihash.Multihash;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -113,11 +114,13 @@ public class Spider {
     public boolean metaGood(String link){
         String replace = link.replace("https://gateway.ipfs.io/ipns/", "").replace("https://ipfs.io/ipfs/", "");
         try {
+            System.out.println(replace);
             HttpResponse<String> stringHttpResponse = Unirest.get("http://ipfs:5001/api/v0/block/stat?arg=" + replace).asString();
             int size = JsonParser.parseString(stringHttpResponse.getBody()).getAsJsonObject().get("Size").getAsInt();
             if (size < 10000) return true;
-        } catch (UnirestException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            return true;
         }
         return false;
     }
