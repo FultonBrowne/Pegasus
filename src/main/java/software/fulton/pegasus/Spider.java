@@ -36,7 +36,6 @@ public class Spider {
 
     public Spider() throws IOException {
         createTempDirectory();
-
         writer = new JsonWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8));
         writer.setIndent("  ");
         writer.beginArray();
@@ -82,7 +81,9 @@ public class Spider {
                 String href = link.absUrl("href");
                 if(!FILTERS.matcher(href).matches() && !href.contains("QmdA5WkDNALetBn4iFeSepHjdLGJdxPBwZyY47ir1bZGAK") && !href.contains("QmNoscE3kNc83dM5rZNUC5UDXChiTdDcgf16RVtFCRWYuU") && !href.contains("QmbsZEvJE8EU51HCUHQg2aem9JNFmFHdva3tGVYutdCXHp")){
                     if (href.startsWith("https://gateway.ipfs.io/ipns/") || href.startsWith("https://ipfs.io/ipfs/") ) {
-                            crawl(href);
+                        Thread thread = new Thread(() -> crawl(href));
+                        thread.start();
+                        thread.join();
                     }
                 }
             }
