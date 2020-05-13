@@ -2,6 +2,8 @@ package software.fulton.pegasus;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,18 +48,17 @@ public class Spider {
      * @return whether or not the crawl was successful
      */
     public boolean crawl(String url) {
-        System.gc();
         if(limit <= beenTo.size()) {
             return true;
         }
         if (beenTo.contains(url)){
             return false;
         }
+        if (!metaGood(url)) return false;
         System.out.println(beenTo.size());
         beenTo.add(url);
         try{
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
-            System.out.println(connection.execute().headers());
             System.out.println(connection.response().contentType());
             if(!connection.response().contentType().contains("text/html")){
                 return false;
@@ -106,6 +107,16 @@ public class Spider {
         outputStream = new FileOutputStream(temp);
 
 
+    }
+    public boolean metaGood(String link){
+        String replace = link.replace("https://gateway.ipfs.io/ipns/", "").replace("https://ipfs.io/ipfs/", "");
+        try {
+            int size = Unirest.get("http://ipfs/api/v0/block/stat" + replace).asJson().getBody().getObject().getInt("Size");
+            if (size < 10000) return true;
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }
