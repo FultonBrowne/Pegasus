@@ -111,7 +111,7 @@ public class Spider {
     public boolean metaGood(String link){
         String replace = link.replace("https://gateway.ipfs.io/ipns/", "").replace("https://ipfs.io/ipfs/", "");
         try {
-            int size = Unirest.get("http://ipfs/api/v0/block/stat" + replace).asJson().getBody().getObject().getInt("Size");
+            int size = Unirest.get("http://ipfs:5001/api/v0/block/stat" + replace).asJson().getBody().getObject().getInt("Size");
             if (size < 10000) return true;
         } catch (UnirestException e) {
             e.printStackTrace();
