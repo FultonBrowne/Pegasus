@@ -1,7 +1,9 @@
 package software.fulton.pegasus;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.jsoup.Connection;
@@ -111,7 +113,8 @@ public class Spider {
     public boolean metaGood(String link){
         String replace = link.replace("https://gateway.ipfs.io/ipns/", "").replace("https://ipfs.io/ipfs/", "");
         try {
-            int size = Unirest.get("http://ipfs:5001/api/v0/block/stat?arg=" + replace).asJson().getBody().getObject().getInt("Size");
+            HttpResponse<String> stringHttpResponse = Unirest.get("http://ipfs:5001/api/v0/block/stat?arg=" + replace).asString();
+            int size = JsonParser.parseString(stringHttpResponse.getBody()).getAsJsonObject().get("Size").getAsInt();
             if (size < 10000) return true;
         } catch (UnirestException e) {
             e.printStackTrace();
