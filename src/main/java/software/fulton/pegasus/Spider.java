@@ -89,7 +89,6 @@ public class Spider {
             return true;
         } catch (Exception ioe) {
             // We were not successful in our HTTP request
-            ioe.printStackTrace();
             return false;
         }
     }
