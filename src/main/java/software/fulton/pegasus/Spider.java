@@ -62,6 +62,7 @@ public class Spider {
         beenTo.add(url);
         try{
             Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
+            connection.timeout(2000);
             connection.execute();
             System.out.println(connection.response().contentType());
             if(!connection.response().contentType().contains("text/html")){
@@ -112,19 +113,6 @@ public class Spider {
         outputStream = new FileOutputStream(temp);
 
 
-    }
-    public boolean metaGood(String link){
-        String replace = link.replace("https://gateway.ipfs.io/ipns/", "").replace("https://ipfs.io/ipfs/", "");
-        try {
-            System.out.println(replace);
-            HttpResponse<String> stringHttpResponse = Unirest.get("http://ipfs:5001/api/v0/block/stat?arg=" + replace).asString();
-            int size = JsonParser.parseString(stringHttpResponse.getBody()).getAsJsonObject().get("Size").getAsInt();
-            if (size < 10000) return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return true;
-        }
-        return false;
     }
 
 }
