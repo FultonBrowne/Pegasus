@@ -3,7 +3,7 @@ services:
   web:
     image: fulton/pegasus
     environment: 
-      - JVM_OPTS=-Xmx12g -Xms12g -XX:MaxPermSize=512m
+      - JVM_OPTS=-Xmx512m -Xms256m -XX:MaxPermSize=1024m
     ports:
       - 8000:8000
     depends_on:
