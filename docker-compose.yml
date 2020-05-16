@@ -1,7 +1,8 @@
-version: "3"
+version: "2.1"
 services:
   web:
     image: fulton/pegasus
+    oom_kill_disable: true
     environment: 
       - JVM_OPTS=-Xmx512m -Xms256m -XX:MaxPermSize=1024m
     ports:
