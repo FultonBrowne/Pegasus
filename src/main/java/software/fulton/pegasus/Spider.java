@@ -1,5 +1,12 @@
 package software.fulton.pegasus;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.regex.Pattern;
+
+import java.util.concurrent.Executors;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
@@ -7,18 +14,12 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.ipfs.multihash.Multihash;
+import java.io.*;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 public class Spider {
 
@@ -109,7 +110,7 @@ public class Spider {
             throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
         }
         System.out.println(temp.toURI());
-        outputStream = new FileOutputStream(temp);
+        outputStream = new BufferedOutputStream(new FileOutputStream(temp));
 
 
     }
