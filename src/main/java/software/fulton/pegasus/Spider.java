@@ -56,8 +56,6 @@ public class Spider {
         if (beenTo.contains(url)){
             return false;
         }
-        boolean isDivisibleBy20 = beenTo.size() % 20 == 0;
-        if(isDivisibleBy20) System.gc();
         System.out.println(beenTo.size());
         beenTo.add(url);
         try{
