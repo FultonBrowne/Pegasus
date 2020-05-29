@@ -1,4 +1,4 @@
-version: "2.1"
+version: "2.4"
 services:
   web:
     image: fulton/pegasus
@@ -11,10 +11,7 @@ services:
   ipfs:
     image: ipfs/go-ipfs
     user: ipfs
-    deploy:
-        resources:
-            limits:
-                     memory: 300m
+    mem_limit: 50m
     ports:
       - 5001:5001
       - 8080:8080
