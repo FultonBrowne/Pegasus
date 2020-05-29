@@ -11,6 +11,10 @@ services:
   ipfs:
     image: ipfs/go-ipfs
     user: ipfs
+    deploy:
+        resources:
+            limits:
+                     memory: 300m
     ports:
       - 5001:5001
       - 8080:8080
