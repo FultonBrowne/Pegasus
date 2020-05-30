@@ -60,9 +60,7 @@ public class Spider {
         System.out.println(beenTo.size());
         beenTo.add(url);
         try{
-            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT);
-            connection.timeout(2000);
-            connection.maxBodySize(900000);
+            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).timeout(2000).maxBodySize(900000);
             connection.execute();
             System.out.println(connection.response().contentType());
             if(!connection.response().contentType().contains("text/html")){
