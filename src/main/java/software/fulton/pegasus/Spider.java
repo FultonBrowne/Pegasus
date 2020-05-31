@@ -60,19 +60,7 @@ public class Spider {
         System.out.println(beenTo.size());
         beenTo.add(url);
         try{
-            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).timeout(2000).maxBodySize(900000);
-            connection.execute();
-            System.out.println(connection.response().contentType());
-            if(!connection.response().contentType().contains("text/html")){
-                return false;
-            }
-            Document htmlDocument = connection.get();
-            Elements linksOnPage = htmlDocument.select("a[href]");
-            try{
-                String inputString = htmlDocument.text();
-                int maxLength = Math.min(inputString.length(), 80);
-                gson.toJson(new IndexedDb(htmlDocument.title(), inputString.substring(0, maxLength), url), IndexedDb.class, writer);}
-            catch (Exception e){e.printStackTrace();}
+            Elements linksOnPage = getLinks(url);
             for (Element link : linksOnPage) {
                 if(limit <= beenTo.size()) {
                     return true;}
@@ -112,5 +100,21 @@ public class Spider {
 
 
     }
+    public Elements getLinks(String url) throws IOException{
+            Connection connection = Jsoup.connect(url).userAgent(USER_AGENT).timeout(2000).maxBodySize(900000);
+            connection.execute();
+            System.out.println(connection.response().contentType());
+            if(!connection.response().contentType().contains("text/html")){
+                return null;
+            }
+            Document htmlDocument = connection.get();
+            Elements linksOnPage = htmlDocument.select("a[href]");
+            try{
+                String inputString = htmlDocument.text();
+                int maxLength = Math.min(inputString.length(), 80);
+                gson.toJson(new IndexedDb(htmlDocument.title(), inputString.substring(0, maxLength), url), IndexedDb.class, writer);}
+            catch (Exception e){e.printStackTrace();}
+        return linksOnPage;
+            }
 
 }
